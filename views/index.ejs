@@ -1,0 +1,42 @@
+<html>
+<head>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type ="text/javascript">
+            $(document). ready(function (){
+            // this triggers the connection event in our server!
+            var socket  = io.connect();
+            // we'll write all the socket stuff after the above line!
+            $('form').submit(function(e){
+                e.preventDefault();
+                var info =$("form").serializeArray();
+                socket.emit("posting_form", {info:info});
+            })
+
+            socket.on("updated_message", function(data){
+                console.log(data.res);
+                $('#info').text("That's what you emmited to server "+JSON.stringify(data.res));
+            })
+
+            socket.on("random_number", function(data){
+                $('#number').text("your lucky number emitted from server is "+data.res);
+            })
+        })
+    </script>
+</head>
+
+
+<form action="/result" method="post">
+Your Name: <input type="text" name="name" ><br>
+Dojo Location: <input type="text" name="location"><br>
+Favorite Language: <input type="text" name="language"><br>
+Comment(optopn):
+<textarea name="comment"></textarea>
+<input type="submit">
+</form>
+
+<h3 id="info"></h3>
+<h3 id ="number"></h3>
+
+</html>
